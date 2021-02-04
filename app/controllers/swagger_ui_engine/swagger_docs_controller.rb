@@ -3,7 +3,14 @@ module SwaggerUiEngine
     include SwaggerUiEngine::ConfigParser
     include SwaggerUiEngine::OauthConfigParser
 
-    add_template_helper SwaggerUiEngine::TranslationHelper
+    if respond_to?(:add_template_helper)
+      # for Rails 6.1<
+      add_template_helper SwaggerUiEngine::TranslationHelper
+    elsif respond_to?(:helper)
+      # for Rails 6.1>=
+      helper SwaggerUiEngine::TranslationHelper
+    end
+
     layout 'swagger_ui_engine/layouts/swagger', except: %w(oauth2)
 
     before_action :set_configs, :set_oauth_configs
